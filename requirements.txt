@@ -6,4 +6,8 @@ python-dotenv==1.0.0
 pydantic>=2.1.1
 fastapi==0.104.1
 uvicorn==0.24.0
+flask==3.0.0
+flask-socketio==5.3.5
+flask-cors==4.0.0
+
 

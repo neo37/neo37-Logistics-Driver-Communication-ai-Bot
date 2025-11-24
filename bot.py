@@ -409,7 +409,7 @@ async def process_crew(message: Message, state: FSMContext):
             "Если нужно зарегистрировать еще одну машину, просто напишите /start",
             reply_markup=ReplyKeyboardRemove()
         )
-        await state.set_state(VehicleRegistration.completed)
+        # Clear state to end the registration flow
         await state.clear()
     else:
         await message.answer(

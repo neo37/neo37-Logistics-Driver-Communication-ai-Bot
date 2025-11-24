@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Telegram Bot
+  telegram-bot:
+    build: .
+    container_name: driver_bot_telegram
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/vehicles.db
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    networks:
+      - bot-network
+    command: python bot.py
+    depends_on:
+      - voice-api
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Voice API
+  voice-api:
+    build: .
+    container_name: driver_bot_voice
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/vehicles.db
+      - VOICE_API_HOST=0.0.0.0
+      - VOICE_API_PORT=8001
+    ports:
+      - "8037:8001"
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    networks:
+      - bot-network
+    command: python voice_api.py
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # API Server (опционально, если нужен REST API)
+  api-server:
+    build: .
+    container_name: driver_bot_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/vehicles.db
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    ports:
+      - "8036:8000"
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    networks:
+      - bot-network
+    command: uvicorn api:app --host 0.0.0.0 --port 8000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  data:

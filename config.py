@@ -12,8 +12,13 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./vehicles.db")
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8000"))
 
+# Voice API настройки
+VOICE_API_HOST = os.getenv("VOICE_API_HOST", "0.0.0.0")
+VOICE_API_PORT = int(os.getenv("VOICE_API_PORT", "8001"))
+
 # Настройки LLM
 LLM_MODEL = "4o-mini"
 LLM_TEMPERATURE = 0.7
 LLM_MAX_TOKENS = 2048
+
 
